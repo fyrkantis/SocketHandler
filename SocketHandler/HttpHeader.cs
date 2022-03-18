@@ -3,7 +3,7 @@ using System.Text;
 
 public class HttpHeader
 {
-    public string raw = "";
+    public byte[] raw = new byte[0];
     public int contentLength = -1;
 
     public HttpHeader(Socket socket)
@@ -13,14 +13,17 @@ public class HttpHeader
 
     void GetHeaders(Socket socket)
     {
+        List<byte> rawList = new List<byte>();
         while (true)
         {
-            string data = ReadToNewline(socket);
+            byte[] rawData = ReadToNewline(socket);
+            rawList.AddRange(rawData);
+            string data = Encoding.ASCII.GetString(rawData);
             if (string.IsNullOrWhiteSpace(data))
             {
                 break;
             }
-            raw += data;
+
             if (tryGetHeaderValue("Content-Length: ", data, out string valueString))
             {
                 if (int.TryParse(valueString, out int number))
@@ -29,23 +32,24 @@ public class HttpHeader
                 }
             }
         }
+        raw = rawList.ToArray();
     }
 
-    string ReadToNewline(Socket socket)
+    byte[] ReadToNewline(Socket socket)
     {
         int bufferSize = 1;
-        byte[] buffer = new byte[bufferSize];
-        string data = "";
+        byte[] rawBuffer = new byte[bufferSize];
+        List<byte> rawDataList = new List<byte>();
 
         while (true)
         {
-            socket.Receive(buffer, bufferSize, SocketFlags.None);
-            string toAdd = Encoding.ASCII.GetString(buffer);
-            Console.Write(toAdd);
-            data += toAdd;
-            if (toAdd[0] == '\n')
+            int bufferLength = socket.Receive(rawBuffer, bufferSize, SocketFlags.None);
+            rawDataList.AddRange(rawBuffer);
+            string buffer = Encoding.ASCII.GetString(rawBuffer);
+            Console.Write(buffer);
+            if (bufferLength == 0 || buffer[0] == '\n')
             {
-                return data;
+                return rawDataList.ToArray();
             }
         }
     }

@@ -26,7 +26,9 @@ public class PythonRouter
             Console.Write("Target not connected");
             return;
         }
-        target.Send(Encoding.ASCII.GetBytes(header.raw));
+        Console.WriteLine("The thing:");
+        Console.WriteLine(Encoding.ASCII.GetString(header.raw));
+        target.Send(header.raw);
         if (header.contentLength == -1)
         {
             Console.Write(" No body");
