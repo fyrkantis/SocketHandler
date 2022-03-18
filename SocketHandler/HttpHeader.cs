@@ -13,6 +13,7 @@ public class HttpHeader
 
     void GetHeaders(Socket socket)
     {
+        Console.WriteLine();
         List<byte> rawList = new List<byte>();
         while (true)
         {
@@ -26,6 +27,7 @@ public class HttpHeader
 
             if (tryGetHeaderValue("Content-Length: ", data, out string valueString))
             {
+                Console.WriteLine("Content-Length: " + valueString);
                 if (int.TryParse(valueString, out int number))
                 {
                     contentLength = number;
@@ -58,7 +60,7 @@ public class HttpHeader
     {
         if (row.StartsWith(name) && row.Length > name.Length)
         {
-            valueString = row.Substring(name.Length + 1);
+            valueString = row.Substring(name.Length);
             return true;
         }
         valueString = "";

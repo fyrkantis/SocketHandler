@@ -26,8 +26,6 @@ public class PythonRouter
             Console.Write("Target not connected");
             return;
         }
-        Console.WriteLine("The thing:");
-        Console.WriteLine(Encoding.ASCII.GetString(header.raw));
         target.Send(header.raw);
         if (header.contentLength == -1)
         {
@@ -35,7 +33,7 @@ public class PythonRouter
             return;
         }
         
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[header.contentLength];
         int readLength = 0;
         while (true)
         {
@@ -45,8 +43,14 @@ public class PythonRouter
                 break;
             }
             int bytesLength = location.Receive(buffer);
+            if (bytesLength <= 0)
+            {
+                Console.Write("\nStopped receiving data");
+                break;
+            }
+
             readLength += bytesLength; 
-            Console.Write(Encoding.UTF8.GetString(buffer));
+            Console.Write(Encoding.UTF8.GetString(buffer) + "(" + readLength + "/" + header.contentLength + ")");
             
             if (!target.IsConnected())
             {
@@ -55,7 +59,7 @@ public class PythonRouter
             }
             target.Send(buffer);
 
-            if (bytesLength <= 0  || readLength >= header.contentLength)
+            if (readLength >= header.contentLength)
             {
                 Console.Write("\nContent length reached.");
                 break;
