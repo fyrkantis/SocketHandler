@@ -34,13 +34,12 @@ static class Program
             Console.Write(" Starting");
 
             PythonRouter pythonRouter = new PythonRouter(ipAddress);
-            pythonRouter.SendSocketStream(handler);
-
             if (!pythonRouter.client.IsConnected())
             {
                 Console.WriteLine(" Couldn't connect to internal server.");
                 continue;
             }
+            pythonRouter.SendSocketStream(handler);
 
             if (handler.IsConnected())
             {
