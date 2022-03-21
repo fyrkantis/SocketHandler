@@ -32,7 +32,8 @@ public class PythonRouter
             Console.Write(" No body");
             return;
         }
-        
+
+        byte[] buffer = new byte[1024];
         int readLength = 0;
         while (true)
         {
@@ -41,7 +42,7 @@ public class PythonRouter
                 Console.Write("\nLocation aborted");
                 break;
             }
-            byte[] buffer = new byte[header.contentLength];
+            
             int bytesLength = location.Receive(buffer);
             if (bytesLength <= 0)
             {

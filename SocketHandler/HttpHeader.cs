@@ -27,7 +27,6 @@ public class HttpHeader
 
             if (tryGetHeaderValue("Content-Length: ", data, out string valueString))
             {
-                Console.WriteLine("Content-Length: " + valueString);
                 if (int.TryParse(valueString, out int number))
                 {
                     contentLength = number;
@@ -48,7 +47,6 @@ public class HttpHeader
             int bufferLength = socket.Receive(rawBuffer, bufferSize, SocketFlags.None);
             rawDataList.AddRange(rawBuffer);
             string buffer = Encoding.ASCII.GetString(rawBuffer);
-            Console.Write(buffer);
             if (bufferLength == 0 || buffer[0] == '\n')
             {
                 return rawDataList.ToArray();
