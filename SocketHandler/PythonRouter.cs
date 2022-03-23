@@ -18,16 +18,16 @@ public class PythonRouter
         }
     }
 
-    void CopySocketStream(Socket location, Socket target, HeaderBytes headers)
+    void CopySocketStream(Socket location, Socket target, HeaderReader reader)
     {
         if (!target.IsConnected())
         {
             Console.Write("Target not connected");
             return;
         }
-        target.Send(headers.raw);
+        target.Send(reader.raw);
         int contentLength = -1;
-        if (headers.headers.TryGetValue("content-length", out string? contentLengthString))
+        if (reader.headers.TryGetValue("content-length", out string? contentLengthString))
         {
             int.TryParse(contentLengthString, out contentLength);
         }
@@ -74,7 +74,7 @@ public class PythonRouter
         }
     }
 
-    public HeaderBytes? SendSocketStream(Socket socket, HeaderBytes socketHeaders)
+    public HeaderReader? SendSocketStream(Socket socket, HeaderReader socketReader)
     {
         if (!server.IsConnected())
         {
@@ -82,16 +82,16 @@ public class PythonRouter
         }
 
         // Sends user data.
-        CopySocketStream(socket, server, socketHeaders);
+        CopySocketStream(socket, server, socketReader);
         Console.Write(" Received");
 
-        HeaderBytes serverHeaders = new HeaderBytes(server);
+        HeaderReader serverReader = new HeaderReader(server);
 
         // Sends server data.
-        CopySocketStream(server, socket, serverHeaders);
+        CopySocketStream(server, socket, serverReader);
         Console.WriteLine(" Sent");
 
-        return serverHeaders;
+        return serverReader;
     }
 
     public void Close()

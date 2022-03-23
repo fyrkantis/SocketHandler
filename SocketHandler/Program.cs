@@ -19,7 +19,7 @@ static class Program
             Socket handler = listener.Accept(); // Accepts connection on another port.
             Console.Write(" Starting");
 
-            HeaderBytes headers = new HeaderBytes(handler);
+            HeaderReader reader = new HeaderReader(handler);
 
             PythonRouter pythonRouter = new PythonRouter(ipAddress);
             if (!pythonRouter.server.IsConnected())
@@ -27,7 +27,7 @@ static class Program
                 Console.WriteLine(" Couldn't connect to internal server.");
                 continue;
             }
-            pythonRouter.SendSocketStream(handler, headers);
+            pythonRouter.SendSocketStream(handler, reader);
 
             if (handler.IsConnected())
             {

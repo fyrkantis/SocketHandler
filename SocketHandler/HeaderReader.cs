@@ -1,12 +1,15 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 
-public class HeaderBytes
+public class HeaderReader
 {
+    public string? method;
+    public Route? route;
+    public string? protocol;
     public byte[] raw = new byte[0];
     public Dictionary<string, string> headers = new Dictionary<string, string>();
 
-    public HeaderBytes(Socket socket)
+    public HeaderReader(Socket socket)
     {
         GetHeaders(socket);
     }
@@ -26,9 +29,28 @@ public class HeaderBytes
             }
 
             string[] dataParts = data.Split(":", 2);
-            if (dataParts.Length >= 2 && !string.IsNullOrWhiteSpace(dataParts[0]) && !string.IsNullOrWhiteSpace(dataParts[1]))
+            if (dataParts.Length >= 1 && !string.IsNullOrWhiteSpace(dataParts[0]))
             {
-                headers.Add(dataParts[0].Trim().ToLower(), dataParts[1].Trim());
+                if (dataParts.Length >= 2 && !string.IsNullOrWhiteSpace(dataParts[1]))
+                {
+                    headers.Add(dataParts[0].Trim().ToLower(), dataParts[1].Trim());
+                }
+                else
+                {
+                    dataParts = data.Split(" ", 3);
+                    if (dataParts.Length >= 1 && !string.IsNullOrWhiteSpace(dataParts[0]))
+                    {
+                        method = dataParts[0];
+                        if (dataParts.Length >= 2 && !string.IsNullOrWhiteSpace(dataParts[1]))
+                        {
+                            route = new Route(dataParts[1]);
+                            if (dataParts.Length >= 3 && !string.IsNullOrWhiteSpace(dataParts[2]))
+                            {
+                                protocol = dataParts[2];
+                            }
+                        }
+                    }
+                }
             }
         }
         raw = rawList.ToArray();
