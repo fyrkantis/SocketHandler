@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Sockets;
+using System.Text;
 
 static class SocketMethods {
     // https://stackoverflow.com/a/722265/13347795
@@ -14,9 +15,4 @@ static class SocketMethods {
             return false;
         }
     }
-
-    /*public static HttpRequestHeaders ReadHeaders(this Socket socket)
-    {
-        
-    }*/
 }

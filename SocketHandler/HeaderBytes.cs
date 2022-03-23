@@ -1,12 +1,12 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 
-public class HttpHeader
+public class HeaderBytes
 {
     public byte[] raw = new byte[0];
-    public int contentLength = -1;
+    public Dictionary<string, string> headers = new Dictionary<string, string>();
 
-    public HttpHeader(Socket socket)
+    public HeaderBytes(Socket socket)
     {
         GetHeaders(socket);
     }
@@ -25,12 +25,10 @@ public class HttpHeader
                 break;
             }
 
-            if (tryGetHeaderValue("Content-Length: ", data, out string valueString))
+            string[] dataParts = data.Split(":", 2);
+            if (dataParts.Length >= 2 && !string.IsNullOrWhiteSpace(dataParts[0]) && !string.IsNullOrWhiteSpace(dataParts[1]))
             {
-                if (int.TryParse(valueString, out int number))
-                {
-                    contentLength = number;
-                }
+                headers.Add(dataParts[0].Trim().ToLower(), dataParts[1].Trim());
             }
         }
         raw = rawList.ToArray();
@@ -47,21 +45,11 @@ public class HttpHeader
             int bufferLength = socket.Receive(rawBuffer, bufferSize, SocketFlags.None);
             rawDataList.AddRange(rawBuffer);
             string buffer = Encoding.ASCII.GetString(rawBuffer);
+            Console.Write(buffer);
             if (bufferLength == 0 || buffer[0] == '\n')
             {
                 return rawDataList.ToArray();
             }
         }
-    }
-
-    bool tryGetHeaderValue(string name, string row, out string valueString)
-    {
-        if (row.StartsWith(name) && row.Length > name.Length)
-        {
-            valueString = row.Substring(name.Length);
-            return true;
-        }
-        valueString = "";
-        return false;
     }
 }
