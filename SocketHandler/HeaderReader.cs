@@ -28,7 +28,7 @@ public class HeaderReader
                 break;
             }
 
-            string[] dataParts = data.Split(":", 2);
+            string[] dataParts = data.Split(':', 2);
             if (dataParts.Length >= 1 && !string.IsNullOrWhiteSpace(dataParts[0]))
             {
                 if (dataParts.Length >= 2 && !string.IsNullOrWhiteSpace(dataParts[1]))

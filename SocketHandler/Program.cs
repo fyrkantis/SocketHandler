@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 static class Program
 {
@@ -21,21 +22,32 @@ static class Program
 
             HeaderReader reader = new HeaderReader(handler);
 
-            PythonRouter pythonRouter = new PythonRouter(ipAddress);
-            if (!pythonRouter.server.IsConnected())
+            if (reader.route == null)
             {
-                Console.WriteLine(" Couldn't connect to internal server.");
+                Console.Write(" No route!");
                 continue;
             }
-            pythonRouter.SendSocketStream(handler, reader);
+            if (reader.route.parts[0].ToLower() == "form")
+            {
+                PythonRouter pythonRouter = new PythonRouter(ipAddress);
+                if (!pythonRouter.server.IsConnected())
+                {
+                    Console.WriteLine(" Couldn't connect to internal server.");
+                    continue;
+                }
+                pythonRouter.SendSocketStream(handler, reader);
+                pythonRouter.Close();
+            }
+            else
+            {
+                handler.Send(Encoding.ASCII.GetBytes("HTTP/1.0 404 Oh no, that's not good...\r\nContent-length: 6\r\n\r\n404 D:"));
+            }
 
             if (handler.IsConnected())
             {
                 handler.Shutdown(SocketShutdown.Both);
             }
             handler.Close();
-
-            pythonRouter.Close();
         }
     }
 }
