@@ -6,6 +6,7 @@ static class Program
 {
     static void Main()
     {
+        Server server = new Server();
         IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
 
         IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 5000);
@@ -40,7 +41,7 @@ static class Program
             }
             else
             {
-                handler.Send(Encoding.ASCII.GetBytes("HTTP/1.0 404 Oh no, that's not good...\r\nContent-length: 6\r\n\r\n404 D:"));
+                server.GetFile(handler, reader);
             }
 
             if (handler.IsConnected())
