@@ -28,6 +28,11 @@ static class Program
                 Console.Write(" No route!");
                 continue;
             }
+            if (reader.route.parts.Length <= 0)
+			{
+                handler.Send(new HeaderGenerator("308 The thing is elsewhere", new Dictionary<string, string> { { "Location", "/index.html" } }).GetBytes());
+                continue;
+			}
             if (reader.route.parts[0].ToLower() == "form")
             {
                 PythonRouter pythonRouter = new PythonRouter(ipAddress);

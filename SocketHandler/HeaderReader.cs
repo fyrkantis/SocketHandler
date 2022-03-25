@@ -13,24 +13,47 @@ public class HeaderGenerator : HeaderClass
     public string status;
     public string? body;
 
-    public HeaderGenerator(FileInfo fileInfo) // For sending a file and standard message.
+    public HeaderGenerator(FileInfo fileInfo, Dictionary<string, string>? extraHeaders = null) // For sending file and standard message.
     {
         protocol = "HTTP/1.0";
         status = "200 All good buckaroo";
         AddFileInfo(fileInfo);
+        if (extraHeaders != null)
+        {
+            AddHeaders(extraHeaders);
+        }
     }
 
-    public HeaderGenerator(string message, string? plainBody) // For sending a message and no file.
+    public HeaderGenerator(string message, string plainBody, Dictionary<string, string>? extraHeaders = null) // For sending custom message and plaintext body.
     {
         protocol = "HTTP/1.0";
         status = message;
-        if (plainBody != null)
+        body = plainBody;
+        headers.Add("Content-length", Encoding.ASCII.GetByteCount(plainBody).ToString());
+        headers.Add("Contnet-type", "text/plain; charset=ascii");
+        if (extraHeaders != null)
+		{
+            AddHeaders(extraHeaders);
+		}
+    }
+
+    public HeaderGenerator(string message, Dictionary<string, string>? extraHeaders = null) // For sending only custom message.
+    {
+        protocol = "HTTP/1.0";
+        status = message;
+        if (extraHeaders != null)
         {
-            body = plainBody;
-            headers.Add("Content-length", Encoding.ASCII.GetByteCount(plainBody).ToString());
-            headers.Add("Contnet-type", "text/plain; charset=ascii");
+            AddHeaders(extraHeaders);
         }
     }
+
+    public void AddHeaders(Dictionary<string, string> extraHeaders)
+	{
+        foreach(KeyValuePair<string, string> header in extraHeaders)
+		{
+            headers.Add(header.Key, header.Value);
+		}
+	}
 
     public void AddFileInfo(FileInfo fileInfo)
     {
