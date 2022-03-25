@@ -1,20 +1,73 @@
-﻿using System.Net.Sockets;
+﻿using SocketHandler;
+using System.Net.Sockets;
 using System.Text;
 
-public class HeaderReader
+public class HeaderClass
+{
+    public string? protocol;
+    public Dictionary<string, string> headers = new Dictionary<string, string>();
+}
+
+public class HeaderGenerator : HeaderClass
+{
+    public string status;
+    public string? body;
+
+    public HeaderGenerator(FileInfo fileInfo) // For sending a file and standard message.
+    {
+        protocol = "HTTP/1.0";
+        status = "200 All good buckaroo";
+        AddFileInfo(fileInfo);
+    }
+
+    public HeaderGenerator(string message, string? plainBody) // For sending a message and no file.
+    {
+        protocol = "HTTP/1.0";
+        status = message;
+        if (plainBody != null)
+        {
+            body = plainBody;
+            headers.Add("Content-length", Encoding.ASCII.GetByteCount(plainBody).ToString());
+            headers.Add("Contnet-type", "text/plain; charset=ascii");
+        }
+    }
+
+    public void AddFileInfo(FileInfo fileInfo)
+    {
+        headers.Add("Content-length", fileInfo.Length.ToString());
+        headers.Add("Content-disposition", "inline; filename = " + fileInfo.Name);
+        headers.Add("Content-type", MimeTypes.GetMimeType(fileInfo.Name) + "; charset=utf-8");
+    }
+
+    public string GetString()
+    {
+        string str = protocol + " " + status;
+        foreach (KeyValuePair<string, string> header in headers)
+        {
+            str += "\r\n" + header.Key + ": " + header.Value;
+        }
+        str += "\r\n\r\n";
+        if (body != null)
+        {
+            str += body;
+        }
+        Console.WriteLine(str);
+        return str;
+    }
+
+    public byte[] GetBytes()
+    {
+        return Encoding.ASCII.GetBytes(GetString());
+    }
+}
+
+public class HeaderReader : HeaderClass
 {
     public string? method;
     public Route? route;
-    public string? protocol;
     public byte[] raw = new byte[0];
-    public Dictionary<string, string> headers = new Dictionary<string, string>();
 
     public HeaderReader(Socket socket)
-    {
-        GetHeaders(socket);
-    }
-
-    void GetHeaders(Socket socket)
     {
         Console.WriteLine();
         List<byte> rawList = new List<byte>();

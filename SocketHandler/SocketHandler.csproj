@@ -11,4 +11,11 @@
     <Folder Include="Website\Assets\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MimeTypes" Version="2.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>

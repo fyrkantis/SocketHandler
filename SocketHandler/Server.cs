@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using SocketHandler;
+using System.Net.Sockets;
 using System.Text;
 
 class Server
@@ -13,25 +14,25 @@ class Server
         
         if (reader.route == null)
         {
-            socket.Send(Encoding.ASCII.GetBytes("HTTP / 1.0 400 You did bad\r\nContent-length: 47\r\n\r\n400: You did a bad request and I don't like it."));
+            socket.Send(new HeaderGenerator("400 You did bad", "400: You did a bad request and I don't like it.").GetBytes());
             return;
         }
         if (projectDirectory == null)
         {
-            socket.Send(Encoding.ASCII.GetBytes("HTTP / 1.0 500 AAAAAA\r\nContent-length: 25\r\n\r\n500: Wtf did you just do?"));
+            socket.Send(new HeaderGenerator("500 AAAAAA", "500: Wtf did you just do?").GetBytes());
             return;
         }
         string path = projectDirectory.FullName.TrimEnd('\\') + "\\Website\\" + reader.route.raw.Replace('/', '\\').TrimStart('\\');
-        Console.WriteLine(path);
-        Console.WriteLine(Directory.Exists(path));
+
         if (!File.Exists(path))
         {
-            socket.Send(Encoding.ASCII.GetBytes("HTTP / 1.0 404 Oh no\r\nContent-length: 34\r\n\r\n404: Oh no, there's nothing there."));
+            socket.Send(new HeaderGenerator("404 Oh no", "404: Oh no, there's nothing there.").GetBytes());
             return;
         }
 
-        long fileSize = new FileInfo(path).Length;
-        socket.Send(Encoding.ASCII.GetBytes("HTTP/1.0 200 All good buckaroo!\r\nContent-length: " + fileSize.ToString() + "\r\n\r\n"));
+        FileInfo fileInfo = new FileInfo(path);
+
+        socket.Send(new HeaderGenerator(fileInfo).GetBytes());
         socket.SendFile(path);
     }
 }
