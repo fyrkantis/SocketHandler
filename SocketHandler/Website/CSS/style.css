@@ -1,41 +1,41 @@
 ﻿* {
-    --mainText: #000;
-    --otherText: #fff;
-    --mainBackground: #fff;
-    --headerBackground: #3b5268;
-    --asideBackground: #32a6c3;
-    --highlightBackground: #d2c8c6;
-    --bodyTop: #709255;
-    --bodyBottom: #3e5622;
-    /* Unused #fb3 */
+	--mainText: #000;
+	--otherText: #fff;
+	--mainBackground: #fff;
+	--headerBackground: #3b5268;
+	--asideBackground: #32a6c3;
+	--highlightBackground: #d2c8c6;
+	--bodyTop: #709255;
+	--bodyBottom: #3e5622;
+	/* Unused #fb3 */
 }
 
 body {
-    min-height: 100vh;
-    background-color: var(--bodyTop);
-    background-image: linear-gradient(var(--bodyTop), var(--bodyBottom));
+	min-height: 100vh;
+	background-color: var(--bodyTop);
+	background-image: linear-gradient(var(--bodyTop), var(--bodyBottom));
 }
 
 main {
-    overflow: auto; /* Prevents float elements from overflowing. */
+	overflow: auto; /* Prevents float elements from overflowing. */
 
-    margin: 4rem;
-    padding: 4rem;
-    background-color: var(--mainBackground);
+	margin: 4rem;
+	padding: 4rem;
+	background-color: var(--mainBackground);
 }
 
 aside {
-    float: right;
-    margin: 2rem;
-    padding: 2rem;
-    background-color: var(--asideBackground);
-    color: var(--otherText);
+	float: right;
+	margin: 2rem;
+	padding: 2rem;
+	background-color: var(--asideBackground);
+	color: var(--otherText);
 }
 
 img {
-    max-width: 20rem;
+	max-width: 20rem;
 }
 
 h1 {
-    font-size: 2em; /* Overrides weird default in chrome. */
+	font-size: 2em; /* Overrides weird default in chrome. */
 }
