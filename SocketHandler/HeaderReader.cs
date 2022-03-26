@@ -24,6 +24,17 @@ public class HeaderGenerator : HeaderClass
         }
     }
 
+    public HeaderGenerator(FileInfo fileInfo, int lenght, Dictionary<string, string>? extraHeaders = null) // For sending file with custom length and standard message.
+    {
+        protocol = "HTTP/1.0";
+        status = "200 All good buckaroo";
+        AddFileInfo(fileInfo, lenght);
+        if (extraHeaders != null)
+        {
+            AddHeaders(extraHeaders);
+        }
+    }
+
     public HeaderGenerator(string message, string plainBody, Dictionary<string, string>? extraHeaders = null) // For sending custom message and plaintext body.
     {
         protocol = "HTTP/1.0";
@@ -55,9 +66,16 @@ public class HeaderGenerator : HeaderClass
 		}
 	}
 
-    public void AddFileInfo(FileInfo fileInfo)
+    public void AddFileInfo(FileInfo fileInfo, int? length = null)
     {
-        headers.Add("Content-length", fileInfo.Length.ToString());
+        if (length == null)
+		{
+            headers.Add("Content-length", fileInfo.Length.ToString());
+        }
+		else
+		{
+            headers.Add("Content-length", length.ToString());
+		}
         headers.Add("Content-disposition", "inline; filename = " + fileInfo.Name);
         headers.Add("Content-type", MimeTypes.GetMimeType(fileInfo.Name) + "; charset=utf-8");
     }
