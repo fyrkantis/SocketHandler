@@ -1,5 +1,6 @@
 ﻿* {
 	--mainText: #000;
+	--linkText: #0062ff;
 	--otherText: #fff;
 	--mainBackground: #fff;
 	--headerBackground: #3b5268;
@@ -7,35 +8,64 @@
 	--highlightBackground: #d2c8c6;
 	--bodyTop: #709255;
 	--bodyBottom: #3e5622;
-	/* Unused #fb3 */
+	--unused: #fb3;
+
+	box-sizing: border-box;
 }
 
 body {
 	min-height: 100vh;
 	background-color: var(--bodyTop);
 	background-image: linear-gradient(var(--bodyTop), var(--bodyBottom));
+
+	--space: calc(1rem + 5vw);
+	--halfSpace: calc(var(--space) / 2);
 }
 
 main {
-	overflow: auto; /* Prevents float elements from overflowing. */
+	margin: var(--space);
+	padding: var(--space);
 
-	margin: 4rem;
-	padding: 4rem;
+	overflow: auto; /* Prevents float elements from overflowing. */
+	
 	background-color: var(--mainBackground);
 }
 
 aside {
+	width: 20rem;
+	max-width: 100%;
+	
+	margin-left: var(--halfSpace);
+	margin-bottom: var(--halfSpace);
+	padding: var(--halfSpace);
+
 	float: right;
-	margin: 2rem;
-	padding: 2rem;
+
 	background-color: var(--asideBackground);
 	color: var(--otherText);
 }
 
 img {
-	max-width: 20rem;
+	width: 100%;
 }
+
+figure {
+	margin: 0px;
+	padding: 0px;
+}
+
+/* Text */
 
 h1 {
 	font-size: 2em; /* Overrides weird default in chrome. */
+}
+
+a {
+	color: var(--linkText);
+
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
 }
