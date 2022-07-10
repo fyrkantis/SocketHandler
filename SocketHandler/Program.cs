@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 static class Program
 {
@@ -33,7 +32,7 @@ static class Program
 				handler.Send(new HeaderGenerator("308 The thing is elsewhere", new Dictionary<string, string> { { "Location", "/index.html" } }).GetBytes());
 				continue;
 			}
-			if (reader.route.parts[0].ToLower() == "form")
+			if (reader.route.parts[0].ToLower() == "wiki")
 			{
 				PythonRouter pythonRouter = new PythonRouter(ipAddress);
 				if (!pythonRouter.server.IsConnected())
